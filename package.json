@@ -1,0 +1,30 @@
+{
+  "name": "codeguru_be",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node-dev --respawn --transpile-only server.ts"
+  },
+  "author": "Dinhgiaandev",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/bcryptjs": "2.4.6",
+    "@types/cookie-parser": "1.4.7",
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.0",
+    "@types/jsonwebtoken": "9.0.7",
+    "@types/node": "22.7.4",
+    "bcryptjs": "2.4.3",
+    "cookie-parser": "1.4.6",
+    "cors": "2.8.5",
+    "dotenv": "16.4.5",
+    "express": "4.21.0",
+    "ioredis": "5.4.1",
+    "jsonwebtoken": "9.0.2",
+    "mongoose": "8.7.0",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.6.2"
+  }
+}
