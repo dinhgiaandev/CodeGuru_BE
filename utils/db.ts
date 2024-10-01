@@ -1,18 +1,23 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
-
-const dbUrl: string = process.env.DB_URL || '';
+// Load biến môi trường từ file .env
+dotenv.config();
 
 const connectDB = async () => {
+    const dbUrl: string = process.env.DB_URL || '';
     try {
-        await mongoose.connect(dbUrl).then((data: any) => {
-            console.log(`Database đã kết nối với ${data.connection.host}`)
-        })
-    } catch (error: any) {
-        console.log(error.message);
-        setTimeout(connectDB, 3000);
+        const conn = await mongoose.connect(dbUrl);
+        console.log(`Database đã kết nối thành công: ${conn.connection.host}`);
+    } catch (error) {
+        // Kiểm tra xem error có phải là một đối tượng không
+        if (error instanceof Error) {
+            console.error(`Lỗi kết nối MongoDB: ${error.message}`);
+        } else {
+            console.error(`Lỗi kết nối MongoDB: ${error}`); // In ra toàn bộ error nếu không phải là Error
+        }
+        process.exit(1); // Dừng server nếu không kết nối được
     }
-}
+};
 
-export default connectDB
+export default connectDB;
