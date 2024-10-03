@@ -1,14 +1,6 @@
 # Dự án CodeGuru_BE
 
-CodeGuru_BE là một dự án backend cho hệ thống quản lý, được phát triển bằng Node.js, Express và TypeScript.
-
-## Yêu cầu hệ thống
-
-Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt các phần mềm sau:
-
-- Node.js (phiên bản 14.x trở lên)
-- npm (thường được cài đặt cùng với Node.js)
-- Git
+CodeGuru_BE là một dự án backend cho hệ thống quản lý khóa học, được phát triển bởi nhóm 10.
 
 ## Hướng dẫn cài đặt và chạy dự án
 
