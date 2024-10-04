@@ -3,10 +3,14 @@ import userModel from '../models/user.model'
 import ErrorHandler from '../utils/ErrorHandle'
 import CatchAsyncError from '../middleware/catchAsycnError'
 import jwt, { Secret } from 'jsonwebtoken'
-require('dotenv').config();
+import dotenv from 'dotenv';
 import ejs from 'ejs'
 import path from 'path'
+import sendMail from '../utils/sendMail'
 
+
+// Load biến môi trường từ file .env.development
+dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 //register
 interface IRegisterBody {
@@ -32,7 +36,23 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
         const activationToken = createActivationToken(user);
         const activationCode = activationToken.activationCode;
         const data = { user: { name: user.name }, activationCode };
-        const html = await ejs.renderFile(path.join)
+        const html = await ejs.renderFile(path.join(__dirname, "../mails/activation-mail.ejs"), data);
+        try {
+            await sendMail({
+                email: user.email,
+                subject: "Kích hoạt tài khoản của bạn",
+                template: "activation-mail.ejs",
+                data
+            });
+
+            res.status(201).json({
+                success: true,
+                message: `Hãy kiểm tra hộp thư của bạn: ${user.email} để kích hoạt tài khoản!`,
+                activationToken: activationToken.token
+            })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
     }
     catch (error: any) {
         return next(new ErrorHandler(error.message, 400))

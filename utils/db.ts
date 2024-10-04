@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
 
-// Load biến môi trường từ file .env
-dotenv.config();
+// Load biến môi trường từ file .env.development
+dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 const connectDB = async () => {
     const dbUrl: string = process.env.DB_URL || '';

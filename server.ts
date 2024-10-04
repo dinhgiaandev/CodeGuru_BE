@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import connectDB from './utils/db'; // Import kết nối MongoDB
 import ErrorMiddleware from './middleware/error';
 const app = express();
+import userRouter from './routes/user.route'
 
 // Load biến môi trường từ file .env.development
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
@@ -23,6 +24,9 @@ app.use(express.json({ limit: "50mb" }));
 
 // Cookie parser
 app.use(cookieParser());
+
+//routes
+app.use("/api/v1/", userRouter)
 
 // CORS - cho phép chia sẻ tài nguyên giữa các domain khác nhau
 app.use(cors({
