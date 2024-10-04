@@ -10,31 +10,29 @@
             margin: 0;
             padding: 0;
             min-width: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             font-size: 16px;
-            line-height: 1.5;
-            background-color: #f4f4f4;
+            line-height: 1.6;
+            background-color: #e9ecef;
             color: #333333;
         }
 
         a {
-            color: #0070f3;
+            color: #0056b3;
             text-decoration: none;
         }
 
         h1 {
             font-size: 28px;
             font-weight: 700;
-            line-height: 1.25;
-            margin-top: 0;
-            margin-bottom: 20px;
+            line-height: 1.3;
+            margin: 0 0 20px;
             text-align: center;
             color: #ffffff;
         }
 
         p {
-            margin-top: 0;
-            margin-bottom: 24px;
+            margin: 0 0 20px;
         }
 
         .outer-wrapper {
@@ -42,38 +40,35 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #e0e0e0;
-            background-image: linear-gradient(45deg, #f3f3f3 25%, transparent 25%, transparent 75%, #f3f3f3 75%, #f3f3f3),
-                linear-gradient(45deg, #f3f3f3 25%, transparent 25%, transparent 75%, #f3f3f3 75%, #f3f3f3);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
         }
 
         .email-wrapper {
             background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #d1d1d1;
         }
 
         .email-header {
             background-color: #0070f3;
-            padding: 30px 24px;
+            background-image: linear-gradient(45deg, #0070f3, #00a1ff);
+            padding: 40px 24px;
             text-align: center;
+            border-bottom: 1px solid #0056b3;
         }
 
-        .logo img {
-            max-width: 150px;
-            height: auto;
-            margin-bottom: 20px;
+        .email-header h1 {
+            font-size: 1.7rem;
         }
 
         .email-body {
             padding: 40px 24px;
+            background-color: #ffffff;
         }
 
         .email-footer {
-            background-color: #f6f6f6;
+            background-color: #f8f9fa;
             padding: 24px;
             text-align: center;
             font-size: 14px;
@@ -83,34 +78,36 @@
 
         .button-active {
             display: inline-block;
-            background-color: #a3b4c6;
-            color: #ffffff;
+            background-color: #5795d8;
+            /* color: #ffffff; */
             font-size: 16px;
             font-weight: 600;
             text-align: center;
             text-decoration: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 4px;
             margin-top: 20px;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .button-active:hover {
-            background-color: #0056b3;
-            color: #eeebeb;
+            background-color: #f04b4b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .code-box {
             background-color: #f0f7ff;
             border: 2px solid #0070f3;
             border-radius: 8px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #0070f3;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             margin: 30px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -119,11 +116,7 @@
     <div class="outer-wrapper">
         <div class="email-wrapper">
             <div class="email-header">
-                <div class="logo">
-                    <img src="D:\Learnspace\Project_VS_code\CNPMNC\Backend\CodeGuru_BE\assets\logoCodeGuru.png"
-                        alt="CodeGuru Logo" />
-                </div>
-                <h1>Chào mừng bạn đến với CodeGuru</h1>
+                <h1>✨ Chào mừng bạn đến với CodeGuru ✨</h1>
             </div>
             <div class="email-body">
                 <p>Xin chào <%= user.name %>,</p>
@@ -133,16 +126,16 @@
                 <div class="code-box">
                     <%= activationCode %>
                 </div>
-                <p>Lưu ý: Mã xác thực này sẽ hết hạn sau 10 phút. Vui lòng nhập mã ngay để hoàn tất quá trình đăng ký.
-                </p>
+                <p><strong>Lưu ý:</strong> Mã xác thực này sẽ hết hạn sau 10 phút. Vui lòng nhập mã ngay để hoàn tất quá
+                    trình đăng ký.</p>
                 <p>Nếu bạn không thực hiện yêu cầu này, xin vui lòng bỏ qua email này hoặc liên hệ với chúng tôi nếu bạn
                     có bất kỳ thắc mắc nào.</p>
-                <a href="#" class="button-active">Kích hoạt tài khoản</a>
+                <a href="#" class="button-active" style="color: #f0f7ff;">Kích hoạt tài khoản</a>
             </div>
             <div class="email-footer">
                 <p>Nếu bạn có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với chúng tôi tại <a
-                        href="mailto:dinhgiaanforwork@gmail.com">dinhgiaanforwork@gmail.com</a></p>
-                <p>&copy; 2024 CodeGuru. Tất cả các quyền thuộc về nhóm 10!</p>
+                        href="mailto:support@codeguru.com">support@codeguru.com</a></p>
+                <p>&copy; 2024 CodeGuru.</p>
             </div>
         </div>
     </div>

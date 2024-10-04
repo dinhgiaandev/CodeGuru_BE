@@ -40,7 +40,7 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
         try {
             await sendMail({
                 email: user.email,
-                subject: "Kích hoạt tài khoản của bạn",
+                subject: "Kích hoạt tài khoản - CodeGuru",
                 template: "activation-mail.ejs",
                 data
             });
