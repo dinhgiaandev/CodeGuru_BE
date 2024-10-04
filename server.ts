@@ -4,7 +4,7 @@ import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './utils/db'; // Import kết nối MongoDB
-
+import ErrorMiddleware from './middleware/error';
 const app = express();
 
 // Load biến môi trường từ file .env.development
@@ -52,5 +52,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
           message: err.message || 'Lỗi server'
      });
 });
+
+app.use(ErrorMiddleware);
 
 export default app;
