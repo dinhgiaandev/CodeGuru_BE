@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import userModel from '../models/user.model'
+import userModel, { IUser } from '../models/user.model'
 import ErrorHandler from '../utils/ErrorHandle'
 import CatchAsyncError from '../middleware/catchAsycnError'
 import jwt, { Secret } from 'jsonwebtoken'
@@ -25,7 +25,7 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
         const { name, email, password } = req.body;
         const isEmailExist = await userModel.findOne({ email });
         if (isEmailExist) {
-            return next(new ErrorHandler("Email này đã tồn tại", 400))
+            return next(new ErrorHandler("Email này đã tồn tại, vui lòng nhập địa chỉ email khác!", 400))
         };
 
         const user: IRegisterBody = {
@@ -70,7 +70,46 @@ export const createActivationToken = (user: any): IActivationToken => {
         user, activationCode
     }, process.env.ACTIVATION_SECRET as Secret,
         {
-            expiresIn: "10m",  //giới hạn token
+            expiresIn: "10m",  //giới hạn expired token
         });
     return { token, activationCode };
 }
+
+
+//user activation
+interface IActivationRequest {
+    activation_token: string;
+    activation_code: string
+}
+
+export const activationUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { activation_token, activation_code } = req.body as IActivationRequest;
+        const newUser: { user: IUser; activationCode: string } = jwt.verify(
+            activation_token, process.env.ACTIVATION_SECRET as string
+        ) as { user: IUser; activationCode: string };
+
+        if (newUser.activationCode != activation_code) {
+            return next(new ErrorHandler("Mã kích hoạt không hợp lệ!", 400))
+        }
+
+        const { name, email, password } = newUser.user;
+        const existUser = await userModel.findOne({ email });
+
+        if (existUser) {
+            return next(new ErrorHandler("Địa chỉ email này đã tồn tại, vui lòng sử dụng địa chỉ email khác!", 400));
+        };
+
+        const user = await userModel.create({
+            name,
+            email,
+            password
+        });
+
+        res.status(201).json({
+            success: true
+        });
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+})
