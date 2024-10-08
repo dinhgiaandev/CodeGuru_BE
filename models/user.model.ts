@@ -1,5 +1,7 @@
 import mongoose, { Model, Schema, Document } from "mongoose";
 import bcrypt from 'bcryptjs';
+require('dotenv').config();
+import jwt from 'jsonwebtoken';
 
 
 //regex email
@@ -7,6 +9,7 @@ const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 export interface IUser extends Document {
+    _id: string;
     name: string;
     email: string;
     password: string;
@@ -18,6 +21,8 @@ export interface IUser extends Document {
     isVerified: boolean;
     courses: Array<{ courseId: string }>;
     comparePassword: (password: string) => Promise<boolean>;
+    SignAccessToken: () => string;
+    SignRefreshToken: () => string;
 };
 
 const userSchema: Schema<IUser> = new mongoose.Schema({
@@ -27,7 +32,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     },
     email: {
         type: String,
-        require: [true, "Vui lòng điền mật khẩu của bạn!"],
+        require: [true, "Vui lòng điền email của bạn!"],
         validate: {
             validator: function (value: string) {
                 return emailRegex.test(value);
@@ -70,6 +75,15 @@ userSchema.pre<IUser>('save', async function (next) {
     next();
 });
 
+//sign access_token
+userSchema.methods.SignAccessToken = function () {
+    return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || '');
+}
+
+//sign refresh_token
+userSchema.methods.SignRefreshToken = function () {
+    return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || '');
+}
 
 //so sánh pass
 userSchema.methods.comparePassword = async function (enteredPassword: string): Promise<boolean> {

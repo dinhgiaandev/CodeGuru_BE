@@ -4,6 +4,7 @@ import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './utils/db'; // Import kết nối MongoDB
+import connectRedis from './utils/redis'; // Import kết nối Redis
 import ErrorMiddleware from './middleware/error';
 const app = express();
 import userRouter from './routes/user.route'
@@ -11,8 +12,11 @@ import userRouter from './routes/user.route'
 // Load biến môi trường từ file .env.development
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
-// Kết nối tới database
+// Kết nối tới database MongoDB
 connectDB();
+
+// Kết nối tới Redis
+const redisClient = connectRedis();
 
 // Tạo server
 app.listen(process.env.PORT, () => {
@@ -26,7 +30,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 //routes
-app.use("/api/v1/", userRouter)
+app.use("/api/v1/", userRouter);
 
 // CORS - cho phép chia sẻ tài nguyên giữa các domain khác nhau
 app.use(cors({

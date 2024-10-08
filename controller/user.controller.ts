@@ -7,9 +7,9 @@ import dotenv from 'dotenv';
 import ejs from 'ejs'
 import path from 'path'
 import sendMail from '../utils/sendMail'
+import { sendToken } from '../utils/jwt'
 
 
-// Load biến môi trường từ file .env.development
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 //register
@@ -25,7 +25,7 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
         const { name, email, password } = req.body;
         const isEmailExist = await userModel.findOne({ email });
         if (isEmailExist) {
-            return next(new ErrorHandler("Email này đã tồn tại, vui lòng nhập địa chỉ email khác!", 400))
+            return next(new ErrorHandler("Email này đã tồn tại, vui lòng sử dụng email khác!", 400))
         };
 
         const user: IRegisterBody = {
@@ -44,7 +44,6 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
                 template: "activation-mail.ejs",
                 data
             });
-
             res.status(201).json({
                 success: true,
                 message: `Hãy kiểm tra hộp thư của bạn: ${user.email} để kích hoạt tài khoản!`,
@@ -97,7 +96,7 @@ export const activationUser = CatchAsyncError(async (req: Request, res: Response
         const existUser = await userModel.findOne({ email });
 
         if (existUser) {
-            return next(new ErrorHandler("Địa chỉ email này đã tồn tại, vui lòng sử dụng địa chỉ email khác!", 400));
+            return next(new ErrorHandler("Email này đã tồn tại, vui lòng sử dụng email khác!", 400));
         };
 
         const user = await userModel.create({
@@ -112,4 +111,35 @@ export const activationUser = CatchAsyncError(async (req: Request, res: Response
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
-})
+});
+
+//login
+interface ILoginRequest {
+    email: string;
+    password: string;
+}
+
+export const loginUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body as ILoginRequest;
+
+        if (!email || !password) {
+            return next(new ErrorHandler("Vui lòng nhập tài khoản và mật khẩu!", 400));
+        }
+
+        const user = await userModel.findOne({ email }).select("+password");
+        if (!user) {
+            return next(new ErrorHandler("Tài khoản hoặc mật khẩu không đúng!", 400))
+        }
+
+        const isPasswordMatch = await user.comparePassword(password);
+        if (!isPasswordMatch) {
+            return next(new ErrorHandler("Tài khoản hoặc mật khẩu không đúng!", 400))
+        }
+
+        sendToken(user, 200, res);
+
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});
