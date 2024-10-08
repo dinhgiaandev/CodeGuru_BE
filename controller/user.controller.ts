@@ -143,3 +143,18 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
+
+//logout 
+export const logoutUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.cookie("access_token", "", { maxAge: 1 });
+        res.cookie("refresh_token", "", { maxAge: 1 });
+        res.status(200).json({
+            success: true,
+            message: "Đăng xuất thành công",
+        });
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});
