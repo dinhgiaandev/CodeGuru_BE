@@ -3,7 +3,7 @@
 CodeGuru_BE là một dự án backend cho hệ thống quản lý khóa học, được phát triển bởi nhóm 10.
 
 <p align="center">
-   <a href='#'> <img src="https://asset.cloudinary.com/duw4cwp7d/8a91596b795846e6efdb374f7f6bebfa" width="200px" disable=true> </a>
+   <a href='#'> <img src="https://res.cloudinary.com/duw4cwp7d/image/upload/v1728060682/logo-codeguru_mjy0p9.png" width="200px" disable=true> </a>
 </p>
 
 <br>
