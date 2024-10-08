@@ -8,6 +8,7 @@ import ejs from 'ejs'
 import path from 'path'
 import sendMail from '../utils/sendMail'
 import { sendToken } from '../utils/jwt'
+import connectRedis from '../utils/redis'
 
 
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
@@ -150,6 +151,11 @@ export const logoutUser = CatchAsyncError(async (req: Request, res: Response, ne
     try {
         res.cookie("access_token", "", { maxAge: 1 });
         res.cookie("refresh_token", "", { maxAge: 1 });
+
+        const userId = req.user?._id || "";
+
+        connectRedis().del(userId);
+
         res.status(200).json({
             success: true,
             message: "Đăng xuất thành công",
