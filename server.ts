@@ -8,25 +8,33 @@ import connectRedis from './utils/redis'; // Import kết nối Redis
 import ErrorMiddleware from './middleware/error';
 const app = express();
 import userRouter from './routes/user.route'
+import { v2 as cloudinary } from 'cloudinary';
 
-// Load biến môi trường từ file .env.development
+
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 // Kết nối tới database MongoDB
 connectDB();
 
-// Kết nối tới Redis
+//kết nối tới Redis
 const redisClient = connectRedis();
+
+//cloudinary config
+cloudinary.config({
+     cloud_name: process.env.CLOUD_NAME,
+     api_key: process.env.CLOUD_API_KEY,
+     api_secret: process.env.CLOUD_SECRET_KEY,
+});
 
 // Tạo server
 app.listen(process.env.PORT, () => {
      console.log(`Server is running on port ${process.env.PORT}`);
 });
 
-// Body parser
+//body parser
 app.use(express.json({ limit: "50mb" }));
 
-// Cookie parser
+//cookie parser
 app.use(cookieParser());
 
 //routes
@@ -37,7 +45,7 @@ app.use(cors({
      origin: process.env.ORIGIN
 }));
 
-// Test API
+//test API
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
      res.status(200).json({
           success: true,
@@ -45,14 +53,14 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
      });
 });
 
-// Xử lý đường dẫn không xác định
+//xử lý đường dẫn không xác định
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
      const err = new Error(`Đường dẫn ${req.originalUrl} không được tìm thấy`);
      (err as any).statusCode = 404;
      next(err);
 });
 
-// Middleware xử lý lỗi
+//middleware xử lý lỗi
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
      const statusCode = err.statusCode || 500;
      res.status(statusCode).json({

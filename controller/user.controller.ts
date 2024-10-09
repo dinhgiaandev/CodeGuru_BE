@@ -10,6 +10,7 @@ import sendMail from '../utils/sendMail'
 import { accessTokenOptions, refreshTokenOptions, sendToken } from '../utils/jwt'
 import connectRedis from '../utils/redis'
 import { getUserById } from '../services/user.service'
+import cloudinary from 'cloudinary';
 
 
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
@@ -318,4 +319,51 @@ export const updateUserPassword = CatchAsyncError(async (req: Request, res: Resp
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
-})
+});
+
+
+//update profile picture
+export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { avatar } = req.body;
+        const userId = req.user?._id;
+        const user = await userModel.findById(userId);
+        if (avatar && user) {
+            //nếu user chỉ có 1 avatar thì gọi đến if này
+            if (user?.avatar?.public_id) {
+                //xóa profile picture cũ
+                await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+
+                const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                    folder: "avatars",
+                    width: 150,
+                });
+                user.avatar = {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url,
+                }
+            } else {
+                const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                    folder: "avatars",
+                    width: 150,
+                });
+                user.avatar = {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url,
+                }
+            }
+        }
+
+        await user?.save();
+
+        await connectRedis().set(userId, JSON.stringify(user));
+
+        res.status(200).json({
+            success: true,
+            user,
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+
+});
