@@ -212,7 +212,7 @@ export const getUserInfo = CatchAsyncError(async (req: Request, res: Response, n
     try {
         const userId = req.user?._id;
         if (!userId) {
-            return next(new ErrorHandler("Thông tin người dùng không được tìm thấy", 400));
+            return next(new ErrorHandler("Thông tin người dùng không được tìm thấy!", 400));
         }
         getUserById(userId, res);
     } catch (error: any) {
@@ -276,6 +276,45 @@ export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response
             user,
         })
 
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});
+
+
+//update user password
+interface IUpdateUserPassword {
+    oldPassword: string;
+    newPassword: string;
+}
+
+export const updateUserPassword = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { oldPassword, newPassword } = req.body as IUpdateUserPassword;
+        if (!oldPassword || !newPassword) {
+            return next(new ErrorHandler("Vui lòng nhập mật khẩu cũ và mật khẩu mới!", 400));
+        }
+
+        const user = await userModel.findById(req.user?._id).select("+password");
+        if (user?.password === undefined) {
+            return next(new ErrorHandler("Người dùng không hợp lệ!", 400));
+        }
+
+        const isPasswordMatch = await user?.comparePassword(oldPassword);
+        if (!isPasswordMatch) {
+            return next(new ErrorHandler("Mật khẩu cũ không đúng!", 400));
+        }
+
+        user.password = newPassword;
+
+        await user.save();
+
+        await connectRedis().set(req.user?._id, JSON.stringify(user));
+
+        res.status(201).json({
+            success: true,
+            user,
+        })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
