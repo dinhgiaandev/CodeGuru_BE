@@ -8,7 +8,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
     const access_token = req.cookies.access_token
 
     if (!access_token) {
-        return next(new ErrorHandler("Vui lòng đăng nhập để truy cập nguồn tài nguyên này", 400));
+        return next(new ErrorHandler("Vui lòng đăng nhập để truy cập nguồn tài nguyên này!", 400));
     }
 
     const decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN as string) as JwtPayload;
@@ -20,7 +20,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
     const user = await connectRedis().get(decoded.id);
 
     if (!user) {
-        return next(new ErrorHandler("Người dùng không được tìm thấy", 400));
+        return next(new ErrorHandler("Người dùng không được tìm thấy!", 400));
     }
 
     req.user = JSON.parse(user);
@@ -32,7 +32,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
 export const authenticateRole = (...roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (!roles.includes(req.user?.role || "")) {
-            return next(new ErrorHandler(`${req.user?.role} không được phép truy cập vào nguồn tài nguyên này`, 403));
+            return next(new ErrorHandler(`${req.user?.role} không được phép truy cập vào nguồn tài nguyên này!`, 403));
         }
         next();
     }

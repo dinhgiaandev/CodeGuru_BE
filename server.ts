@@ -9,9 +9,16 @@ import ErrorMiddleware from './middleware/error';
 const app = express();
 import userRouter from './routes/user.route'
 import { v2 as cloudinary } from 'cloudinary';
-
+const cors = require('cors');
 
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
+
+app.use(cors({
+     origin: ['http://localhost:3000'],
+     credentials: true,
+     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+     headers: ['Content-Type', 'Authorization']
+}));
 
 // Kết nối tới database MongoDB
 connectDB();
@@ -42,7 +49,8 @@ app.use("/api/v1/", userRouter);
 
 // CORS - cho phép chia sẻ tài nguyên giữa các domain khác nhau
 app.use(cors({
-     origin: process.env.ORIGIN
+     origin: ['http://localhost:3000'],
+     credentials: true,
 }));
 
 //test API

@@ -91,7 +91,7 @@ export const activationUser = CatchAsyncError(async (req: Request, res: Response
             activation_token, process.env.ACTIVATION_SECRET as string
         ) as { user: IUser; activationCode: string };
 
-        if (newUser.activationCode != activation_code) {
+        if (newUser.activationCode !== activation_code) {
             return next(new ErrorHandler("Mã kích hoạt không hợp lệ!", 400))
         }
 

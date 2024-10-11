@@ -26,14 +26,14 @@ const ErrorMiddleware = (
 
     //wrong JWT error
     if (err.name === 'JsonWebTokenError') {
-        const message = `Json web token is invalid, try again`;
+        const message = `Json web token không hợp lệ, vui lòng thử lại!`;
         err = new ErrorHandler(message, 400);
     }
 
 
     //JWT expired error
     if (err.name === 'TokenExpiredError') {
-        const message = `Json web token is expired, try again`;
+        const message = `Json web token không hợp lệ, vui lòng thử lại!`;
         err = new ErrorHandler(message, 400);
     }
 
