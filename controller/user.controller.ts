@@ -252,18 +252,9 @@ interface IUpdateUserInfo {
 
 export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response, next) => {
     try {
-        const { name, email } = req.body as IUpdateUserInfo;
+        const { name } = req.body as IUpdateUserInfo;
         const userId = req.user?._id;
         const user = await userModel.findById(userId);
-
-        if (name && user) {
-            const isEmailExists = await userModel.findOne({ email });
-            if (isEmailExists) {
-                return next(new ErrorHandler("Email này đã được sử dụng, vui lòng sử dụng email khác!", 400));
-            }
-            user.email = email;
-        }
-
         if (name && user) {
             user.name = name;
         }
