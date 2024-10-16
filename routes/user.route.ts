@@ -6,12 +6,14 @@ const userRouter = express.Router();
 userRouter.post('/register', registerUser);
 userRouter.post('/activation-user', activationUser);
 userRouter.post('/login', loginUser);
-userRouter.get('/logout', isAuthenticated, authenticateRole("admin"), logoutUser);
+userRouter.get('/logout', logoutUser);
 userRouter.get('/refresh', updateAccessToken);
-userRouter.get('/me', isAuthenticated, getUserInfo);
+userRouter.get('/me', getUserInfo);
 userRouter.post('/social-auth', socialAuth);
-userRouter.put('/update-user-info', isAuthenticated, updateUserInfo);
-userRouter.put('/update-user-password', isAuthenticated, updateUserPassword);
-userRouter.put('/update-user-avatar', isAuthenticated, updateProfilePicture);
+userRouter.put('/update-user-info', updateUserInfo);
+userRouter.put('/update-user-password', updateUserPassword);
+userRouter.put('/update-user-avatar', updateProfilePicture);
 
 export default userRouter
+
+// isAuthenticated, authenticateRole("admin"),
