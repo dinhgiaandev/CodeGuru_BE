@@ -9,6 +9,7 @@ import ErrorMiddleware from './middleware/error';
 const app = express();
 import userRouter from './routes/user.route'
 import { v2 as cloudinary } from 'cloudinary';
+import courseRouter from './routes/course.route';
 
 
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
@@ -20,7 +21,7 @@ app.use(cors({
      allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Kết nối tới database MongoDB
+//kết nối database MongoDB
 connectDB();
 
 //kết nối tới Redis
@@ -33,7 +34,7 @@ cloudinary.config({
      api_secret: process.env.CLOUD_SECRET_KEY,
 });
 
-// Tạo server
+//tạo server
 app.listen(process.env.PORT, () => {
      console.log(`Server is running on port ${process.env.PORT}`);
 });
@@ -46,8 +47,9 @@ app.use(cookieParser());
 
 //routes
 app.use("/api/v1/", userRouter);
+app.use("/api/v1/", courseRouter);
 
-// CORS - cho phép chia sẻ tài nguyên giữa các domain khác nhau
+//CORS
 app.use(cors({
      origin: ['http://localhost:3000'],
      credentials: true,
