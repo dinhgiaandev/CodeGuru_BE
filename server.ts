@@ -3,13 +3,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import connectDB from './utils/db'; // Import kết nối MongoDB
-import connectRedis from './utils/redis'; // Import kết nối Redis
+import connectDB from './utils/db';
+import connectRedis from './utils/redis';
 import ErrorMiddleware from './middleware/error';
 const app = express();
 import userRouter from './routes/user.route'
 import { v2 as cloudinary } from 'cloudinary';
-const cors = require('cors');
+
 
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
@@ -17,7 +17,7 @@ app.use(cors({
      origin: ['http://localhost:3000'],
      credentials: true,
      methods: ['GET', 'POST', 'PUT', 'DELETE'],
-     headers: ['Content-Type', 'Authorization']
+     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Kết nối tới database MongoDB
