@@ -3,7 +3,6 @@ import ejs from 'ejs'
 import path from 'path'
 import dotenv from 'dotenv';
 
-// Load biến môi trường từ file .env.development
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 interface EmailOptions {

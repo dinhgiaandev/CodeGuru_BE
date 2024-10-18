@@ -250,28 +250,34 @@ interface IUpdateUserInfo {
     email?: string;
 }
 
-export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response, next) => {
+export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name } = req.body as IUpdateUserInfo;
         const userId = req.user?._id;
         const user = await userModel.findById(userId);
+
         if (name && user) {
             user.name = name;
         }
 
         await user?.save();
 
-        await connectRedis().set(userId, JSON.stringify(user));
+        if (userId) {
+            await connectRedis().set(userId, JSON.stringify(user));
+        } else {
+            throw new Error('User ID không hợp lệ.');
+        }
 
         res.status(201).json({
             success: true,
             user,
-        })
+        });
 
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
 });
+
 
 
 //update user password
@@ -314,47 +320,37 @@ export const updateUserPassword = CatchAsyncError(async (req: Request, res: Resp
 
 
 //update profile picture
+interface IUpdateProfilePicture {
+    avatar: string,
+}
+
 export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { avatar } = req.body;
+        const { avatar } = req.body as IUpdateProfilePicture;
         const userId = req.user?._id;
         const user = await userModel.findById(userId);
         if (avatar && user) {
-            //nếu user chỉ có 1 avatar thì gọi đến if này
             if (user?.avatar?.public_id) {
-                //xóa profile picture cũ
                 await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
-
-                const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-                    folder: "avatars",
-                    width: 150,
-                });
-                user.avatar = {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                }
-            } else {
-                const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-                    folder: "avatars",
-                    width: 150,
-                });
-                user.avatar = {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                }
             }
+            const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                folder: "avatars",
+                width: 150,
+            });
+            user.avatar = {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+            };
         }
 
         await user?.save();
-
         await connectRedis().set(userId, JSON.stringify(user));
 
         res.status(200).json({
             success: true,
-            user,
-        })
+            user
+        });
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
-
 });

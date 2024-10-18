@@ -1,5 +1,4 @@
 import mongoose, { Model, Schema, Document } from "mongoose";
-import { title } from "process";
 
 interface IComment extends Document {
     user: object,
