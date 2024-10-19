@@ -15,7 +15,7 @@ import courseRouter from './routes/course.route';
 dotenv.config({ path: path.resolve(__dirname, '.env.development') });
 
 app.use(cors({
-     origin: ['http://localhost:3000'],
+     origin: [`${process.env.ORIGIN}`],
      credentials: true,
      methods: ['GET', 'POST', 'PUT', 'DELETE'],
      allowedHeaders: ['Content-Type', 'Authorization']
@@ -48,12 +48,6 @@ app.use(cookieParser());
 //routes
 app.use("/api/v1/", userRouter);
 app.use("/api/v1/", courseRouter);
-
-//CORS
-app.use(cors({
-     origin: ['http://localhost:3000'],
-     credentials: true,
-}));
 
 //test API
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {

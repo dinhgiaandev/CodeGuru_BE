@@ -329,14 +329,25 @@ export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Re
         const { avatar } = req.body as IUpdateProfilePicture;
         const userId = req.user?._id;
         const user = await userModel.findById(userId);
+
         if (avatar && user) {
+            const cloudTasks = [];
+
+            // Xóa ảnh cũ (nếu có)
             if (user?.avatar?.public_id) {
-                await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+                cloudTasks.push(cloudinary.v2.uploader.destroy(user?.avatar?.public_id));
             }
-            const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-                folder: "avatars",
-                width: 150,
-            });
+            // Tải ảnh mới lên
+            cloudTasks.push(
+                cloudinary.v2.uploader.upload(avatar, {
+                    folder: "avatars",
+                    width: 150,
+                })
+            );
+
+            const [_, myCloud] = await Promise.all(cloudTasks);
+
+            // Cập nhật avatar mới
             user.avatar = {
                 public_id: myCloud.public_id,
                 url: myCloud.secure_url,
@@ -348,7 +359,7 @@ export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Re
 
         res.status(200).json({
             success: true,
-            user
+            user,
         });
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
