@@ -7,7 +7,7 @@ userRouter.post('/register', registerUser);
 userRouter.post('/activation-user', activationUser);
 userRouter.post('/login', loginUser);
 userRouter.get('/logout', logoutUser);
-userRouter.get('/refresh', isAuthenticated, updateAccessToken);
+userRouter.get('/refresh', updateAccessToken);
 userRouter.get('/me', isAuthenticated, getUserInfo);
 userRouter.post('/social-auth', socialAuth);
 userRouter.put('/update-user-info', isAuthenticated, updateUserInfo);
