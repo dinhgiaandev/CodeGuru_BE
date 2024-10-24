@@ -4,7 +4,7 @@ import ErrorHandler from "../utils/ErrorHandle";
 import cloudinary from "cloudinary";
 import { createCourse } from "../services/course.service";
 import CourseModel from "../models/course.model";
-//import axios from "";
+import axios from "axios";
 
 
 //upload course
@@ -93,3 +93,5 @@ export const generateVideoUrl = CatchAsyncError(async(req: Request, res: Respons
         return next(new ErrorHandler(error.message, 400));
     }
 })
+
+
